@@ -1,0 +1,64 @@
+generator client {
+platformFeeBps Int @default(1500)
+amountCents Int
+currency String
+createdAt DateTime @default(now())
+updatedAt DateTime @updatedAt
+booking Booking @relation(fields: [bookingId], references: [id])
+}
+
+
+model Review {
+id String @id @default(cuid())
+bookingId String @unique
+fromUserId String
+toUserId String
+rating Int
+comment String?
+createdAt DateTime @default(now())
+booking Booking @relation(fields: [bookingId], references: [id])
+fromUser User @relation("ReviewsByUser", fields: [fromUserId], references: [id])
+toUser User @relation("ReviewsForUser", fields: [toUserId], references: [id])
+}
+
+
+model PayoutAccount {
+id String @id @default(cuid())
+userId String @unique
+provider String
+accountId String
+user User @relation(fields: [userId], references: [id])
+}
+
+
+model Notification {
+id String @id @default(cuid())
+userId String
+channel String
+title String
+body String
+readAt DateTime?
+createdAt DateTime @default(now())
+user User @relation(fields: [userId], references: [id])
+@@index([userId, createdAt])
+}
+
+
+model Device {
+id String @id @default(cuid())
+userId String
+pushToken String
+platform String
+user User @relation(fields: [userId], references: [id])
+}
+
+
+model Report {
+id String @id @default(cuid())
+byUserId String
+againstUserId String
+reason String
+createdAt DateTime @default(now())
+byUser User @relation("ReportsByUser", fields: [byUserId], references: [id])
+againstUser User @relation("ReportsForUser", fields: [againstUserId], references: [id])
+}
